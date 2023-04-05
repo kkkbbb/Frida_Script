@@ -2,6 +2,12 @@ Java.perform(function(){
     var isLoging = false
     var log = Java.use("android.util.Log");
     var throwable = Java.use("java.lang.Throwable");
+    var system = Java.use("java.lang.System");
+    function hash(obj){
+        var m = system.identityHashCode(obj)
+        return m.toString(16)
+    }
+
     function logStack(){
         return log.getStackTraceString(throwable.$new());
     };
@@ -115,12 +121,9 @@ Java.perform(function(){
                 }
                 
                 
-                try{
-                    var res = this[methodName].apply(this,arguments);
-                }catch(e){
-                    console.log(e)
-                    throw e
-                }
+                
+                var res = this[methodName].apply(this,arguments);
+                
 
                 //Java.cast(this.mAm.value,Java.use("com.android.server.am.ActivityManagerService")).mHandler.value.dump(Java.use("android.util.LogPrinter").$new(3,"mylogprinter"),"queuedump ")
 
@@ -200,7 +203,45 @@ Java.perform(function(){
         return Java.cast(value,mtype)
     }
     
-    hook3("com.google.android.libraries.communications.conference.ui.callui.SingleCallActivity",['N','cu','n','o','p','v','w','x','y','invalidateOptionsMenu']) 
+    function refField(mclass,FieldName){
+        var field = mclass.getClass().getField(FieldName)
+        field.setAccessible(true)
+        return field.get(mclass)
+    }
+    // hook("com.google.android.libraries.communications.conference.ui.callui.SingleCallActivity","finish")
+    // hook3("com.google.android.libraries.communications.conference.ui.callui.SingleCallActivity",['N','cu','n','o','p','v','w','x','y','invalidateOptionsMenu']) 
+    // hook("com.google.android.libraries.communications.conference.ui.callui.SingleCallActivity","$init")
+    // hook2("android.app.Activity","finish")
+    // hook("fey","$init",(arg)=>{
+    //     try{
+    //         check(arg.args[1],"android.content.Intent")
+    //         return true
+    //     }catch{
+    //         return false
+    //     }
+    // })
+    // hook("com.google.apps.tiktok.account.api.controller.AccountControllerImpl$AccountControllerLifecycleObserver","f")
+    // hook("oqh","o")
+    // hook("oqb","c")
+    // hook("aw","b")
+    // hook("hsd","aj",null,(arg)=>{
+    //     arg.printer.add(refField(arg.thiz.f(),"d"))
+    // })
+    // hook("hsh","$init")
+    // hook("kmh","A")
+    // hook("jlg","$init")
 
+    // hook("hrw","$init")
+    // hook("kmg","$init")
+    hook("j$.util.Optional","of",(arg)=>{
+        try{
+            check(arg.args[0],"kmg")
+            return true
+        }catch{
+            return false
+        }
+    },null,(arg)=>{
+        arg.printer.add(hash(arg.result))
+    })
 
 });
